@@ -81,13 +81,18 @@ public class Game extends Pane {
         Pile piles = getValidIntersectingPile(card,foundationPiles);
         //TODO
         if ( piles != null){
-            handleValidMove(card, piles);
+            if (card.getRank() == 1 ){
+                handleValidMove(card, piles);
+            }else{
+                draggedCards.forEach(MouseUtil::slideBack);
+                draggedCards.clear();
+            }
         }
         else if (pile != null) {
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-            draggedCards = null;
+            draggedCards.clear();
         }
     };
 
@@ -200,5 +205,7 @@ public class Game extends Pane {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
+
+
 
 }
