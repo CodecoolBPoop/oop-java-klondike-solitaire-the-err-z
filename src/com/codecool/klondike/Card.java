@@ -82,13 +82,11 @@ public class Card extends ImageView {
     }
 
     public static boolean areAscending(Card first, Card second) {
-        // TODO
-        return false;
+        return first.rank.ordinal() - second.rank.ordinal() == -1;
     }
 
     public static boolean areDescending(Card first, Card second) {
-        // TODO
-        return false;
+        return first.rank.ordinal() - second.rank.ordinal() == 1;
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
