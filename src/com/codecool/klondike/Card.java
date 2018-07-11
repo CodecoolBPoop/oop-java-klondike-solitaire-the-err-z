@@ -63,7 +63,7 @@ public class Card extends ImageView {
     }
 
     public void moveToPile(Pile destPile) {
-        this.getContainingPile().getCards().remove(this);
+        this.getContainingPile().remove(this);
         destPile.addCard(this);
     }
 

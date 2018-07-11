@@ -35,10 +35,6 @@ public class Pile extends Pane {
         return cardGap;
     }
 
-    public ObservableList<Card> getCards() {
-        return cards;
-    }
-
     public int numOfCards() {
         //TODO
         return 1;
@@ -50,6 +46,10 @@ public class Pile extends Pane {
 
     public void clear() {
         //TODO
+    }
+
+    public void remove(Card card) {
+        cards.remove(card);
     }
 
     public void addCard(Card card) {
