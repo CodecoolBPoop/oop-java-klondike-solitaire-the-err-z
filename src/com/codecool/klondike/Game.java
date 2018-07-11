@@ -79,12 +79,16 @@ public class Game extends Pane {
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
+        Pile piles = getValidIntersectingPile(card,foundationPiles);
         //TODO
-        if (pile != null) {
+        if ( piles != null){
+            handleValidMove(card, piles);
+        }
+        else if (pile != null) {
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-            draggedCards = null;
+            draggedCards.clear();
         }
     };
 
@@ -112,8 +116,15 @@ public class Game extends Pane {
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        //TODO
-        return true;
+        if (destPile.topCardIsFaceDown()) {
+            return false;
+        }
+
+        if (destPile.isEmpty()) {
+            return destPile.acceptsAsFirst(card);
+        }
+
+        return destPile.canPlaceOnTop(card);
     }
 
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
