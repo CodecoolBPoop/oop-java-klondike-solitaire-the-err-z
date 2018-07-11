@@ -12,6 +12,7 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
+import sun.awt.SunHints;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -79,13 +80,13 @@ public class Game extends Pane {
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
-        Pile piles = getValidIntersectingPile(card,foundationPiles);
+        Pile piles = getValidIntersectingPile(card, foundationPiles);
         //TODO
-        if ( piles != null){
+        if (piles != null) {
             handleValidMove(card, piles);
 
-        }
-        else if (pile != null) {
+        } else if (pile != null) {
+
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
@@ -124,7 +125,6 @@ public class Game extends Pane {
         if (destPile.isEmpty()) {
             return destPile.acceptsAsFirst(card);
         }
-
         return destPile.canPlaceOnTop(card);
     }
 
@@ -159,6 +159,7 @@ public class Game extends Pane {
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
+        checkTableauPilesLastCardIsFlipped();
     }
 
 
@@ -196,8 +197,8 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
-        Iterator<Card> deckIterator = deck.iterator();
         //TODO
+        Iterator<Card> deckIterator = deck.iterator();
         int tableauPileLength = tableauPiles.size();
         for (int i = 0; i < tableauPileLength; i++) {
             for (int j = 0; j < i + 1; j++) {
@@ -205,7 +206,7 @@ public class Game extends Pane {
                 tableauPiles.get(i).addCard(card);
                 addMouseEventHandlers(card);
                 getChildren().add(card);
-                if (j == i ) {
+                if (j == i) {
                     card.flip();
                 }
             }
@@ -217,22 +218,19 @@ public class Game extends Pane {
             getChildren().add(card);
 
         });
-
-        int cardDeckNumber = deck.size();
-        for (int i = 0; i < 7; i++) {
-            int randomCardColor = (int) (Math.random() * 4);
-            int randomCardNumber = (int) (Math.random() * (cardDeckNumber / 4));
-        }
-
-
     }
 
-    public void test(Object value) {
-        if (value instanceof Iterator) {
-            System.out.println("String");
-        } else {
-            System.out.println("Not String");
-        }
+    public boolean checkTableauPilesLastCardIsFlipped() {
+        for (Pile card : tableauPiles) {
+            System.out.println(card.getTopCard());
+            boolean check = card.getTopCard().isFaceDown();
+            System.out.println(check);
+            if (check) {
+                card.getTopCard().flip();
+                return check;
+            }
+
+        } return false;
     }
 
     public void setTableBackground(Image tableBackground) {
@@ -240,7 +238,6 @@ public class Game extends Pane {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
-
 
 
 }
