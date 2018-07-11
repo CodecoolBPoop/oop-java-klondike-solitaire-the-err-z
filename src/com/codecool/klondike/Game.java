@@ -83,6 +83,7 @@ public class Game extends Pane {
         //TODO
         if ( piles != null){
             handleValidMove(card, piles);
+
         }
         else if (pile != null) {
             handleValidMove(card, pile);
@@ -239,5 +240,7 @@ public class Game extends Pane {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
+
+
 
 }
