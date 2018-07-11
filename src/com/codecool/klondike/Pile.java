@@ -40,6 +40,22 @@ public class Pile extends Pane {
         return 1;
     }
 
+    public boolean topCardIsFaceDown() {
+        // TODO: remove this when autoflip is implemented
+        return !isEmpty() && cards.get(cards.size()-1).isFaceDown();
+    }
+
+    public boolean acceptsAsFirst(Card card) {
+        switch (pileType) {
+        case FOUNDATION:
+            return card.getRank() == Card.Rank.ACE;
+        case TABLEAU:
+            return card.getRank() == Card.Rank.KING;
+        default:
+            return false;
+        }
+    }
+
     public boolean isEmpty() {
         return cards.isEmpty();
     }
