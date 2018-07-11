@@ -115,7 +115,7 @@ public class Game extends Pane {
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        //TODO
+        //TODO: do the enums as they will benefit us
         return true;
     }
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
