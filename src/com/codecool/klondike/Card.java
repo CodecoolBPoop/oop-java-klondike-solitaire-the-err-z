@@ -123,6 +123,7 @@ public class Card extends ImageView {
     }
 
     public enum Rank {
+        ACE,
         TWO,
         THREE,
         FOUR,
@@ -134,14 +135,10 @@ public class Card extends ImageView {
         TEN,
         JACK,
         QUEEN,
-        KING,
-        ACE;
+        KING;
 
         public String getNumberString() {
-            if(this == ACE) {
-                return "1";
-            }
-            return Integer.toString(ordinal() + 2);
+            return Integer.toString(ordinal() + 1);
         }
     }
 

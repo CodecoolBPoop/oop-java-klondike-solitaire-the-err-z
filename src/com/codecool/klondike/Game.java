@@ -82,12 +82,8 @@ public class Game extends Pane {
         Pile piles = getValidIntersectingPile(card,foundationPiles);
         //TODO
         if ( piles != null){
-            if (card.getRank() == 1 ){
-                handleValidMove(card, piles);
-            }else{
-                draggedCards.forEach(MouseUtil::slideBack);
-                draggedCards.clear();
-            }
+            handleValidMove(card, piles);
+
         }
         else if (pile != null) {
             handleValidMove(card, pile);
