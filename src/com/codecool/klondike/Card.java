@@ -100,6 +100,7 @@ public class Card extends ImageView {
                 result.add(new Card(suit, rank, true));
             }
         }
+        // Shuffle the cards
         Collections.shuffle(result);
         return result;
     }

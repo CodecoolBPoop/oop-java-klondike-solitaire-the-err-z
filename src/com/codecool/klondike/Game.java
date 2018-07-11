@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class Game extends Pane {
 
@@ -125,6 +126,7 @@ public class Game extends Pane {
 
         return destPile.canPlaceOnTop(card);
     }
+
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
         for (Pile pile : piles) {
@@ -188,18 +190,45 @@ public class Game extends Pane {
             tableauPile.setLayoutY(275);
             tableauPiles.add(tableauPile);
             getChildren().add(tableauPile);
+
         }
     }
 
     public void dealCards() {
         Iterator<Card> deckIterator = deck.iterator();
         //TODO
+        int tableauPileLength = tableauPiles.size();
+        for (int i = 0; i < tableauPileLength; i++) {
+            for (int j = 0; j < i + 1; j++) {
+                Card card = deckIterator.next();
+                tableauPiles.get(i).addCard(card);
+                addMouseEventHandlers(card);
+                getChildren().add(card);
+            }
+        }
+
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
+
         });
 
+        int cardDeckNumber = deck.size();
+        for (int i = 0; i < 7; i++) {
+            int randomCardColor = (int) (Math.random() * 4);
+            int randomCardNumber = (int) (Math.random() * (cardDeckNumber / 4));
+        }
+
+
+    }
+
+    public void test(Object value) {
+        if (value instanceof Iterator) {
+            System.out.println("String");
+        } else {
+            System.out.println("Not String");
+        }
     }
 
     public void setTableBackground(Image tableBackground) {
