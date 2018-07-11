@@ -63,7 +63,7 @@ public class Card extends ImageView {
     }
 
     public void moveToPile(Pile destPile) {
-        this.getContainingPile().getCards().remove(this);
+        this.getContainingPile().remove(this);
         destPile.addCard(this);
     }
 
@@ -78,8 +78,15 @@ public class Card extends ImageView {
     }
 
     public static boolean isOppositeColor(Card card1, Card card2) {
-        //TODO
-        return true;
+        return card1.getColor() != card2.getColor();
+    }
+
+    public static boolean areAscending(Card first, Card second) {
+        return first.rank.ordinal() - second.rank.ordinal() == -1;
+    }
+
+    public static boolean areDescending(Card first, Card second) {
+        return first.rank.ordinal() - second.rank.ordinal() == 1;
     }
 
     public static boolean isSameSuit(Card card1, Card card2) {
@@ -110,6 +117,10 @@ public class Card extends ImageView {
         }
     }
 
+    private Suit.Color getColor() {
+        return suit.getColor();
+    }
+
     public enum Rank {
         TWO,
         THREE,
@@ -134,9 +145,21 @@ public class Card extends ImageView {
     }
 
     public enum Suit {
-        HEARTS,
-        DIAMONDS,
-        SPADES,
-        CLUBS
+        HEARTS(Color.RED),
+        DIAMONDS(Color.RED),
+        SPADES(Color.BLACK),
+        CLUBS(Color.BLACK);
+
+        enum Color {RED, BLACK}
+
+        private final Color color;
+
+        Suit(Color color) {
+            this.color = color;
+        }
+
+        public Color getColor() {
+            return color;
+        }
     }
 }

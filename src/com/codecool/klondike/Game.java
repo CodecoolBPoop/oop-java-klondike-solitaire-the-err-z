@@ -120,8 +120,15 @@ public class Game extends Pane {
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        //TODO: do the enums as they will benefit us
-        return true;
+        if (destPile.topCardIsFaceDown()) {
+            return false;
+        }
+
+        if (destPile.isEmpty()) {
+            return destPile.acceptsAsFirst(card);
+        }
+
+        return destPile.canPlaceOnTop(card);
     }
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
