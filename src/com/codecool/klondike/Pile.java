@@ -56,6 +56,24 @@ public class Pile extends Pane {
         }
     }
 
+    /**
+     * Shall be called only when there _is_ a top card.
+     */
+    public boolean canPlaceOnTop(Card card) {
+        final boolean areOppositeColor = Card.isOppositeColor(getTopCard(), card);
+        final boolean areSameSuit = Card.isSameSuit(getTopCard(), card);
+        final boolean areAscending = Card.areAscending(getTopCard(), card);
+        final boolean areDescending = Card.areDescending(getTopCard(), card);
+        switch (pileType) {
+        case FOUNDATION:
+            return areSameSuit && areAscending;
+        case TABLEAU:
+            return areOppositeColor && areDescending;
+        default:
+            return false;
+        }
+    }
+
     public boolean isEmpty() {
         return cards.isEmpty();
     }

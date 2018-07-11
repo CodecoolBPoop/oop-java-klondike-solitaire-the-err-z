@@ -82,6 +82,16 @@ public class Card extends ImageView {
         return true;
     }
 
+    public static boolean areAscending(Card first, Card second) {
+        // TODO
+        return false;
+    }
+
+    public static boolean areDescending(Card first, Card second) {
+        // TODO
+        return false;
+    }
+
     public static boolean isSameSuit(Card card1, Card card2) {
         return card1.getSuit() == card2.getSuit();
     }

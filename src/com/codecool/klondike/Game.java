@@ -123,7 +123,7 @@ public class Game extends Pane {
             return destPile.acceptsAsFirst(card);
         }
 
-        return false;
+        return destPile.canPlaceOnTop(card);
     }
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
