@@ -78,8 +78,7 @@ public class Card extends ImageView {
     }
 
     public static boolean isOppositeColor(Card card1, Card card2) {
-        //TODO
-        return true;
+        return card1.getColor() != card2.getColor();
     }
 
     public static boolean areAscending(Card first, Card second) {
@@ -120,6 +119,10 @@ public class Card extends ImageView {
         }
     }
 
+    private Suit.Color getColor() {
+        return suit.getColor();
+    }
+
     public enum Rank {
         TWO,
         THREE,
@@ -144,9 +147,21 @@ public class Card extends ImageView {
     }
 
     public enum Suit {
-        HEARTS,
-        DIAMONDS,
-        SPADES,
-        CLUBS
+        HEARTS(Color.RED),
+        DIAMONDS(Color.RED),
+        SPADES(Color.BLACK),
+        CLUBS(Color.BLACK);
+
+        enum Color {RED, BLACK}
+
+        private final Color color;
+
+        Suit(Color color) {
+            this.color = color;
+        }
+
+        public Color getColor() {
+            return color;
+        }
     }
 }
