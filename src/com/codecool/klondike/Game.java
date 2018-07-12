@@ -1,6 +1,8 @@
 package com.codecool.klondike;
 
+
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -12,6 +14,7 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
+import sun.awt.SunHints;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -73,19 +76,19 @@ public class Game extends Pane {
         card.setTranslateX(offsetX);
         card.setTranslateY(offsetY);
     };
-
+    // list size change listener
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
         if (draggedCards.isEmpty())
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
-        Pile piles = getValidIntersectingPile(card,foundationPiles);
+        Pile piles = getValidIntersectingPile(card, foundationPiles);
         //TODO
-        if ( piles != null){
+        if (piles != null) {
             handleValidMove(card, piles);
 
-        }
-        else if (pile != null) {
+        } else if (pile != null) {
+
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
@@ -133,7 +136,6 @@ public class Game extends Pane {
         if (destPile.isEmpty()) {
             return destPile.acceptsAsFirst(card);
         }
-
         return destPile.canPlaceOnTop(card);
     }
 
@@ -205,8 +207,8 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
-        Iterator<Card> deckIterator = deck.iterator();
         //TODO
+        Iterator<Card> deckIterator = deck.iterator();
         int tableauPileLength = tableauPiles.size();
         for (int i = 0; i < tableauPileLength; i++) {
             for (int j = 0; j < i + 1; j++) {
@@ -214,7 +216,7 @@ public class Game extends Pane {
                 tableauPiles.get(i).addCard(card);
                 addMouseEventHandlers(card);
                 getChildren().add(card);
-                if (j == i ) {
+                if (j == i) {
                     card.flip();
                 }
             }
@@ -227,29 +229,23 @@ public class Game extends Pane {
 
         });
 
-        int cardDeckNumber = deck.size();
-        for (int i = 0; i < 7; i++) {
-            int randomCardColor = (int) (Math.random() * 4);
-            int randomCardNumber = (int) (Math.random() * (cardDeckNumber / 4));
-        }
+        // list change listener
+        for (Pile i : tableauPiles) {
+            i.getCards().addListener((ListChangeListener<Card>) c -> {
+                if (!i.isEmpty() && i.getTopCard().isFaceDown()) {
+                    i.getTopCard().flip();
+                }
+            });
 
-
-    }
-
-    public void test(Object value) {
-        if (value instanceof Iterator) {
-            System.out.println("String");
-        } else {
-            System.out.println("Not String");
         }
     }
+
 
     public void setTableBackground(Image tableBackground) {
         setBackground(new Background(new BackgroundImage(tableBackground,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
-
 
 
 }
