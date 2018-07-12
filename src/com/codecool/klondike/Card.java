@@ -1,5 +1,6 @@
 package com.codecool.klondike;
 
+import com.codecool.klondike.Game;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

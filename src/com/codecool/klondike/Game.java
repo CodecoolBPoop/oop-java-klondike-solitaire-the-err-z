@@ -1,5 +1,6 @@
 package com.codecool.klondike;
 
+
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
@@ -74,7 +75,7 @@ public class Game extends Pane {
         card.setTranslateX(offsetX);
         card.setTranslateY(offsetY);
     };
-
+    // list size change listener
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
         if (draggedCards.isEmpty())
             return;
@@ -218,19 +219,20 @@ public class Game extends Pane {
             getChildren().add(card);
 
         });
+
+        //listener
     }
 
-    public boolean checkTableauPilesLastCardIsFlipped() {
+    public void checkTableauPilesLastCardIsFlipped() {
         for (Pile card : tableauPiles) {
             System.out.println(card.getTopCard());
             boolean check = card.getTopCard().isFaceDown();
             System.out.println(check);
             if (check) {
                 card.getTopCard().flip();
-                return check;
             }
 
-        } return false;
+        }
     }
 
     public void setTableBackground(Image tableBackground) {
