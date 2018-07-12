@@ -2,6 +2,7 @@ package com.codecool.klondike;
 
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -160,7 +161,6 @@ public class Game extends Pane {
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
-        checkTableauPilesLastCardIsFlipped();
     }
 
 
@@ -220,20 +220,17 @@ public class Game extends Pane {
 
         });
 
-        //listener
-    }
-
-    public void checkTableauPilesLastCardIsFlipped() {
-        for (Pile card : tableauPiles) {
-            System.out.println(card.getTopCard());
-            boolean check = card.getTopCard().isFaceDown();
-            System.out.println(check);
-            if (check) {
-                card.getTopCard().flip();
-            }
+        // list change listener
+        for (Pile i : tableauPiles) {
+            i.getCards().addListener((ListChangeListener<Card>) c -> {
+                if (!i.isEmpty() && i.getTopCard().isFaceDown()) {
+                    i.getTopCard().flip();
+                }
+            });
 
         }
     }
+
 
     public void setTableBackground(Image tableBackground) {
         setBackground(new Background(new BackgroundImage(tableBackground,

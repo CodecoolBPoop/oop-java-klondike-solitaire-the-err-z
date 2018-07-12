@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Observable;
 
 public class Pile extends Pane {
 
@@ -115,6 +116,10 @@ public class Pile extends Pane {
         GaussianBlur gaussianBlur = new GaussianBlur(10);
         setBackground(background);
         setEffect(gaussianBlur);
+    }
+
+    public ObservableList<Card> getCards() {
+        return cards;
     }
 
     public enum PileType {
