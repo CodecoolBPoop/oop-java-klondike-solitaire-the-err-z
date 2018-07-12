@@ -1,6 +1,9 @@
 package com.codecool.klondike;
 
+
+import com.sun.org.apache.bcel.internal.generic.ObjectType;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -12,10 +15,12 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
+import sun.awt.SunHints;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class Game extends Pane {
 
@@ -58,36 +63,71 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
         Card card = (Card) e.getSource();
         Pile activePile = card.getContainingPile();
+        ObservableList<Card> movedCards = activePile.getCards();
+        //moveMultipleCards(movedCards);
         if (activePile.getPileType() == Pile.PileType.STOCK)
             return;
         double offsetX = e.getSceneX() - dragStartX;
         double offsetY = e.getSceneY() - dragStartY;
 
         draggedCards.clear();
-        draggedCards.add(card);
+        boolean findChosenCard = false;
+        for (Card chosenCard:movedCards) {
+            if (chosenCard.equals(card) && !card.isFaceDown()) {
+                findChosenCard = true;
+                draggedCards.add(card);
+                card.getDropShadow().setRadius(20);
+                card.getDropShadow().setOffsetX(10);
+                card.getDropShadow().setOffsetY(10);
 
-        card.getDropShadow().setRadius(20);
-        card.getDropShadow().setOffsetX(10);
-        card.getDropShadow().setOffsetY(10);
+                card.toFront();
+                card.setTranslateX(offsetX);
+                card.setTranslateY(offsetY);
+            } else if (findChosenCard && !chosenCard.isFaceDown()){
+                draggedCards.add(chosenCard);
+                chosenCard.getDropShadow().setRadius(20);
+                chosenCard.getDropShadow().setOffsetX(10);
+                chosenCard.getDropShadow().setOffsetY(10);
 
-        card.toFront();
-        card.setTranslateX(offsetX);
-        card.setTranslateY(offsetY);
+                chosenCard.toFront();
+                chosenCard.setTranslateX(offsetX);
+                chosenCard.setTranslateY(offsetY);
+            }continue;
+
+                //for (int j = i + 1; j < ((ObservableList) movedCards).size(); j++) {
+//                    System.out.println("Click");
+//                    System.out.println(card + " " + i );
+//                    System.out.println(((ObservableList) movedCards).get(j) + " " + j);
+                //}
+          //  }
+        }
+        //draggedCards.add(card);
+
     };
-
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
         if (draggedCards.isEmpty())
             return;
         Card card = (Card) e.getSource();
         Pile pile = getValidIntersectingPile(card, tableauPiles);
+        Pile piles = getValidIntersectingPile(card, foundationPiles);
         //TODO
-        if (pile != null) {
+        if (piles != null) {
+            handleValidMove(card, piles);
+
+        } else if (pile != null) {
+
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-            draggedCards = null;
+            draggedCards.clear();
         }
     };
+
+    public void moveMultipleCards(Object aObject) {
+        for (int i = 0; i < ((ObservableList) aObject).size(); i++) {
+            System.out.println(((ObservableList) aObject).get(i));
+        }
+    }
 
     public boolean isGameWon() {
         //TODO
@@ -109,13 +149,29 @@ public class Game extends Pane {
 
     public void refillStockFromDiscard() {
         //TODO
+        if (stockPile.isEmpty()) {
+            while (!discardPile.isEmpty()) {
+                discardPile.getTopCard().flip();
+                discardPile.getTopCard().moveToPile(stockPile);
+
+            }
+
+
+        }
         System.out.println("Stock refilled from discard pile.");
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        //TODO
-        return true;
+        if (destPile.topCardIsFaceDown()) {
+            return false;
+        }
+
+        if (destPile.isEmpty()) {
+            return destPile.acceptsAsFirst(card);
+        }
+        return destPile.canPlaceOnTop(card);
     }
+
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
         for (Pile pile : piles) {
@@ -179,24 +235,50 @@ public class Game extends Pane {
             tableauPile.setLayoutY(275);
             tableauPiles.add(tableauPile);
             getChildren().add(tableauPile);
+
         }
     }
 
     public void dealCards() {
-        Iterator<Card> deckIterator = deck.iterator();
         //TODO
+        Iterator<Card> deckIterator = deck.iterator();
+        int tableauPileLength = tableauPiles.size();
+        for (int i = 0; i < tableauPileLength; i++) {
+            for (int j = 0; j < i + 1; j++) {
+                Card card = deckIterator.next();
+                tableauPiles.get(i).addCard(card);
+                addMouseEventHandlers(card);
+                getChildren().add(card);
+                if (j == i) {
+                    card.flip();
+                }
+            }
+        }
+
         deckIterator.forEachRemaining(card -> {
             stockPile.addCard(card);
             addMouseEventHandlers(card);
             getChildren().add(card);
+
         });
 
+        // list change listener
+        for (Pile i : tableauPiles) {
+            i.getCards().addListener((ListChangeListener<Card>) c -> {
+                if (!i.isEmpty() && i.getTopCard().isFaceDown()) {
+                    i.getTopCard().flip();
+                }
+            });
+
+        }
     }
+
 
     public void setTableBackground(Image tableBackground) {
         setBackground(new Background(new BackgroundImage(tableBackground,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
     }
+
 
 }

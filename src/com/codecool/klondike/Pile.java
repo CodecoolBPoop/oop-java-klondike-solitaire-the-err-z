@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Observable;
 
 public class Pile extends Pane {
 
@@ -35,13 +36,43 @@ public class Pile extends Pane {
         return cardGap;
     }
 
-    public ObservableList<Card> getCards() {
-        return cards;
-    }
-
     public int numOfCards() {
         //TODO
         return 1;
+    }
+
+    public boolean topCardIsFaceDown() {
+        // TODO: remove this when autoflip is implemented
+        return !isEmpty() && cards.get(cards.size()-1).isFaceDown();
+    }
+
+    public boolean acceptsAsFirst(Card card) {
+        switch (pileType) {
+        case FOUNDATION:
+            return card.getRank() == Card.Rank.ACE;
+        case TABLEAU:
+            return card.getRank() == Card.Rank.KING;
+        default:
+            return false;
+        }
+    }
+
+    /**
+     * Shall be called only when there _is_ a top card.
+     */
+    public boolean canPlaceOnTop(Card card) {
+        final boolean areOppositeColor = Card.isOppositeColor(getTopCard(), card);
+        final boolean areSameSuit = Card.isSameSuit(getTopCard(), card);
+        final boolean areAscending = Card.areAscending(getTopCard(), card);
+        final boolean areDescending = Card.areDescending(getTopCard(), card);
+        switch (pileType) {
+        case FOUNDATION:
+            return areSameSuit && areAscending;
+        case TABLEAU:
+            return areOppositeColor && areDescending;
+        default:
+            return false;
+        }
     }
 
     public boolean isEmpty() {
@@ -50,6 +81,10 @@ public class Pile extends Pane {
 
     public void clear() {
         //TODO
+    }
+
+    public void remove(Card card) {
+        cards.remove(card);
     }
 
     public void addCard(Card card) {
@@ -81,6 +116,10 @@ public class Pile extends Pane {
         GaussianBlur gaussianBlur = new GaussianBlur(10);
         setBackground(background);
         setEffect(gaussianBlur);
+    }
+
+    public ObservableList<Card> getCards() {
+        return cards;
     }
 
     public enum PileType {
