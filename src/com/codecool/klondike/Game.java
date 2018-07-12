@@ -1,6 +1,7 @@
 package com.codecool.klondike;
 
 
+import com.sun.org.apache.bcel.internal.generic.ObjectType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ListChangeListener;
@@ -60,23 +61,47 @@ public class Game extends Pane {
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
         Card card = (Card) e.getSource();
         Pile activePile = card.getContainingPile();
+        ObservableList<Card> movedCards = activePile.getCards();
+        //moveMultipleCards(movedCards);
         if (activePile.getPileType() == Pile.PileType.STOCK)
             return;
         double offsetX = e.getSceneX() - dragStartX;
         double offsetY = e.getSceneY() - dragStartY;
 
         draggedCards.clear();
-        draggedCards.add(card);
+        boolean findChosenCard = false;
+        for (Card chosenCard:movedCards) {
+            if (chosenCard.equals(card) && !card.isFaceDown()) {
+                findChosenCard = true;
+                draggedCards.add(card);
+                card.getDropShadow().setRadius(20);
+                card.getDropShadow().setOffsetX(10);
+                card.getDropShadow().setOffsetY(10);
 
-        card.getDropShadow().setRadius(20);
-        card.getDropShadow().setOffsetX(10);
-        card.getDropShadow().setOffsetY(10);
+                card.toFront();
+                card.setTranslateX(offsetX);
+                card.setTranslateY(offsetY);
+            } else if (findChosenCard && !chosenCard.isFaceDown()){
+                draggedCards.add(chosenCard);
+                chosenCard.getDropShadow().setRadius(20);
+                chosenCard.getDropShadow().setOffsetX(10);
+                chosenCard.getDropShadow().setOffsetY(10);
 
-        card.toFront();
-        card.setTranslateX(offsetX);
-        card.setTranslateY(offsetY);
+                chosenCard.toFront();
+                chosenCard.setTranslateX(offsetX);
+                chosenCard.setTranslateY(offsetY);
+            }continue;
+
+                //for (int j = i + 1; j < ((ObservableList) movedCards).size(); j++) {
+//                    System.out.println("Click");
+//                    System.out.println(card + " " + i );
+//                    System.out.println(((ObservableList) movedCards).get(j) + " " + j);
+                //}
+          //  }
+        }
+        //draggedCards.add(card);
+
     };
-    // list size change listener
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
         if (draggedCards.isEmpty())
             return;
@@ -95,6 +120,12 @@ public class Game extends Pane {
             draggedCards.clear();
         }
     };
+
+    public void moveMultipleCards(Object aObject) {
+        for (int i = 0; i < ((ObservableList) aObject).size(); i++) {
+            System.out.println(((ObservableList) aObject).get(i));
+        }
+    }
 
     public boolean isGameWon() {
         //TODO
@@ -116,8 +147,8 @@ public class Game extends Pane {
 
     public void refillStockFromDiscard() {
         //TODO
-        if (stockPile.isEmpty()){
-            while(!discardPile.isEmpty()){
+        if (stockPile.isEmpty()) {
+            while (!discardPile.isEmpty()) {
                 discardPile.getTopCard().flip();
                 discardPile.getTopCard().moveToPile(stockPile);
 
