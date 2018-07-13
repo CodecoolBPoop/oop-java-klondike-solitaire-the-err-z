@@ -111,7 +111,7 @@ public class Game extends Pane {
         Pile pile = getValidIntersectingPile(card, tableauPiles);
         Pile piles = getValidIntersectingPile(card, foundationPiles);
         //TODO
-        if (piles != null) {
+        if (piles != null && draggedCards.size() == 1) {
             handleValidMove(card, piles);
 
         } else if (pile != null) {
@@ -138,6 +138,7 @@ public class Game extends Pane {
         deck = Card.createNewDeck();
         initPiles();
         dealCards();
+        winningPopUpWindow();
     }
 
     public void addMouseEventHandlers(Card card) {
@@ -159,6 +160,29 @@ public class Game extends Pane {
 
         }
         System.out.println("Stock refilled from discard pile.");
+    }
+
+    public boolean checkEmptyTableauPiles() {
+
+        Integer emptyPilesCounter = 0;
+        boolean isItTrue = false;
+
+        for ( Pile tablePile : foundationPiles){
+            if (tablePile.isEmpty()){
+                emptyPilesCounter++;
+            }
+        }
+        if ( emptyPilesCounter == 6){
+            isItTrue = true;
+        }
+        return isItTrue;
+    }
+
+    public void winningPopUpWindow(){
+        if ( stockPile.isEmpty() && discardPile.isEmpty() && checkEmptyTableauPiles()){
+            System.out.println("win");
+
+        }
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
