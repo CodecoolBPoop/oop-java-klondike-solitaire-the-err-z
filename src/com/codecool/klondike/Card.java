@@ -107,7 +107,7 @@ public class Card extends ImageView {
     }
 
     public static void loadCardImages() {
-        cardBackImage = new Image("card_images/card_back.png");
+        cardBackImage = new Image("card_images/card_back_nude.jpg");
         for (Suit suit : Suit.values()) {
             String suitName = suit.toString().toLowerCase();
             for (Rank rank : Rank.values()) {
